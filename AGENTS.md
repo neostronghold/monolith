@@ -6,35 +6,51 @@ This repository is the **monolith** for **neostronghold** — a premium open-sou
 
 ## Overview
 
-neostronghold is an AI-powered smart home platform built on a fork of Home Assistant. This repo contains:
+neostronghold is an AI-powered smart home platform built on a fork of Home Assistant. The monolith references everything as submodules:
 
-| What | Where | Tech |
-|---|---|---|
-| 🌐 **Brand website / pitch deck** | `web/` | Next.js 16, Tailwind v4, Three.js, Framer Motion |
-| 📚 **Strategy & business docs** | `docs/` | Markdown — business plan, funding strategy, GTM plans |
-| 🐍 **Home Assistant fork (backend)** | `core/` | Python 3.14, asyncio, SQLAlchemy (git submodule) |
-| 📖 **Reference implementations** | `inspiration/` | HA frontend, openclaw, opencode (git submodules) |
-| 🚧 **Main app (coming soon)** | `app/` | React + shadcn + Expo — see `docs/INSPIRATION.md` |
+| What | Where | Repo | Tech |
+|---|---|---|---|
+| 🌐 **Brand website / pitch deck** | `web/` | neostronghold/web | Next.js 16, Tailwind v4, Three.js, Framer Motion |
+| 📚 **Strategy & business docs** | `docs/` | — (in monolith) | Markdown |
+| 🚧 **Main app (Prototype 1)** | `app/` | neostronghold/app | React 19, Vite, shadcn/ui, Tailwind v4 |
+| 🐍 **Home Assistant fork (backend)** | `core/` | neostronghold/core | Python 3.14, asyncio, SQLAlchemy |
+| 🖥️ **neostrongholdOS (HA OS fork)** | `os/` | neostronghold/os | Buildroot (embedded Linux) |
+| 📖 **Reference implementations** | `inspiration/` | Various | HA frontend (Lit), openclaw, opencode |
 
-**Do NOT write substantial code in the submodules directly from this repo.** Changes to `core/` and `frontend/` should be committed in their own repos first, then the submodule pointer is updated here.
+**Do NOT write substantial code in the submodules directly from this repo.** Changes should be committed in their own repos first, then the submodule pointer is updated here.
 
 ---
 
-## Quick Start — Website
+## Quick Start
+
+```bash
+# Clone everything (slow — huge repos)
+git clone --recurse-submodules git@github.com:neostronghold/monolith.git
+cd monolith
+
+# Or clone just the monolith first, then init submodules as needed
+git clone git@github.com:neostronghold/monolith.git
+cd monolith
+git submodule init
+git submodule update --depth 1 web app os
+```
+
+### Website
 
 ```bash
 cd web
 pnpm install
-pnpm dev
-# → http://localhost:3000
-```
-
-### Build
-
-```bash
-cd web
+pnpm dev   # → http://localhost:3000
 pnpm build
 pnpm start
+```
+
+### App (Prototype 1)
+
+```bash
+cd app
+pnpm install
+pnpm dev   # → http://localhost:5173
 ```
 
 ---
@@ -42,123 +58,93 @@ pnpm start
 ## Repository Structure
 
 ```
-neostronghold/
-├── web/                          # 🌐 Brand website (Next.js 16)
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── page.tsx          # Main landing page (20 sections)
-│   │   │   ├── contact/page.tsx  # Contact form with Web3Forms
-│   │   │   └── globals.css       # Cosmic theme, glass utilities
-│   │   ├── components/
-│   │   │   ├── sections/         # 20 pitch deck sections
-│   │   │   ├── ui/               # shadcn-themed primitives
-│   │   │   ├── layout/           # Nav, Footer
-│   │   │   ├── effects/          # Starfield, scroll-reveal, 3D globe
-│   │   │   └── contact-provider.tsx  # Contact dialog context
-│   │   └── lib/
-│   │       ├── constants.ts      # All site data, product info, copy
-│   │       ├── fonts.ts          # Space Grotesk + Inter
-│   │       └── utils.ts          # cn() helper
-│   └── public/                   # SVG logo, icons, favicon, manifest
-│
-├── docs/                         # 📚 Strategy & business documents
-│   ├── BUSINESS_PLAN.md          # Full 15-section business plan
-│   ├── PATH_TO_1B.md             # Roadmap from zero to $1B exit
-│   ├── HARDWARE_STRATEGY.md      # Pulse/Nexus/Bastion hardware tiers
-│   ├── AI_PRICING_MODEL.md       # 4-tier subscription + marketplace
-│   ├── SOLAR_PARTNERSHIP.md      # Victron/Sunsynk/Rubicon pitch
-│   ├── ELON_X_STRATEGY.md        # X demo playbook for @elonmusk
-│   ├── YC_APPLICATION.md         # Pre-filled Y Combinator app
-│   ├── ARCHITECT_CHANNEL.md      # CPD course, trade program
-│   ├── DIASPORA_GTM.md           # UK/Aus/Portugal/Dubai expansion
-│   ├── MARK2_WEBSITE_SPEC.md     # Full website spec (1,044 lines)
+monolith/
+├── web/                          # 🌐 Brand website (submodule → neostronghold/web)
+├── app/                          # 🚧 Main smart home app (submodule → neostronghold/app)
+├── core/                         # 🐍 HA Core fork (submodule → neostronghold/core)
+├── os/                           # 🖥️ neostrongholdOS (submodule → neostronghold/os)
+├── docs/                         # 📚 Strategy & business documents (in monolith)
+│   ├── BUSINESS_PLAN.md
+│   ├── PATH_TO_1B.md
+│   ├── HARDWARE_STRATEGY.md
+│   ├── AI_PRICING_MODEL.md
+│   ├── SOLAR_PARTNERSHIP.md
+│   ├── ELON_X_STRATEGY.md
+│   ├── YC_APPLICATION.md
+│   ├── ARCHITECT_CHANNEL.md
+│   ├── DIASPORA_GTM.md
+│   ├── MARK2_WEBSITE_SPEC.md
+│   ├── INSPIRATION.md
+│   ├── app-planning-prompt.md
 │   └── promotions/
-│       └── prototype_messages.md # Outreach message templates
-│
-├── core/                         # 🐍 Python backend (submodule)
 ├── inspiration/                  # 📖 Reference implementations (submodules)
-│   ├── frontend/                 # Home Assistant frontend (Lit)
+│   ├── frontend/                 # HA frontend (Lit, research only)
 │   ├── openclaw/                 # Multi-agent orchestration
 │   └── opencode/                 # AI agent interface & tool-use
-├── app/                          # 🚧 Main app (coming soon)
-├── scripts/
-│   └── convert_logo.py           # One-time: PNG → SVG logo converter
-└── README.md                     # Project readme with emojis
+└── scripts/
+    └── convert_logo.py
 ```
-
----
-
-## Website Sections (20 total)
-
-The landing page is a scrollable pitch deck with these sections in order:
-
-| # | Section | Key Content |
-|---|---|---|
-| 1 | **Hero** | Three.js 3D globe, rotating text, role CTAs |
-| 2 | **Problem** | 4 pain point cards |
-| 3 | **How It Works** | 3-step journey |
-| 4 | **Hardware Showcase** | Pulse (Core) + Nexus (Pro) with CSS device renders |
-| 5 | **Agent Hub** | tmux-like multi-agent workspace |
-| 6 | **AI Agent** | WhatsApp chat mockup demo |
-| 7 | **Features** | 6 product feature cards |
-| 8 | **Tesla Integration** | Fleet API features, Powerwall |
-| 9 | **Agent Marketplace** | 6 category cards with agent counts |
-| 10 | **For Architects** | CPD course, trade partner benefits |
-| 11 | **SA Diaspora** | 4-country market expansion cards |
-| 12 | **Competition** | 2×2 matrix (Open vs Closed × Premium vs DIY) |
-| 13 | **Market** | 6 stat cards with market data |
-| 14 | **Pricing** | 3 tiers (Plus/Pro/Installer) + quotation option |
-| 15 | **Open Source** | Philosophy, GitHub CTA |
-| 16 | **Roadmap** | Multi-step interactive stepper (4 phases) |
-| 17 | **Alpha Community** | Neighbor testimonials |
-| 18 | **Team** | Annekin (CEO) + Corrie (Installation) |
-| 19 | **Investors** | 6 key metrics + deck request CTA |
-| 20 | **CTA / Contact** | Email capture with Web3Forms integration |
 
 ---
 
 ## Design System
 
-| Token | Value |
-|---|---|
-| **Theme** | Cosmic dark, glassmorphism |
-| **Primary** | HSL 196 94% 48% (electric cyan) |
-| **Secondary** | HSL 263 70% 50% (nebula purple) |
-| **Background** | HSL 228 30% 6% (deep space) |
-| **Glass** | `blur(20px) saturate(180%) brightness(110%)` |
-| **Fonts** | Space Grotesk (headings), Inter (body), JetBrains Mono (code) |
-| **Radius** | 1rem (16px) — consistent across all cards |
+| Token | Value | CSS Variable |
+|---|---|---|
+| **Theme** | Cosmic dark, glassmorphism | — |
+| **Primary** | HSL 196 94% 48% (electric cyan) | `--primary` |
+| **Secondary** | HSL 263 70% 50% (nebula purple) | `--secondary` |
+| **Background** | HSL 228 30% 6% (deep space) | `--background` |
+| **Glass** | `blur(20px) saturate(180%)` | `.glass` utility |
+| **Fonts** | Space Grotesk (headings), Inter (body), JetBrains Mono (code) | `--font-heading`, `--font-sans`, `--font-mono` |
+| **Radius** | 1rem (16px) | `--radius` |
+
+All theme tokens are defined in `web/src/app/globals.css` and should be replicated in `app/src/lib/theme.ts`.
 
 ---
 
 ## Key Scripts
 
 ```bash
+# Web
 cd web
-pnpm dev          # Start dev server on :3000
+pnpm dev          # Dev server :3000
 pnpm build        # Production build
-pnpm lint         # ESLint check
+
+# App (when scaffolded)
+cd app
+pnpm dev          # Dev server :5173
+pnpm build        # Production build
 ```
 
 ---
 
 ## Submodule Usage
 
-The `core/` and `inspiration/` directories contain git submodules. They are maintained separately:
+All submodules and their repos:
+
+| Path | Repo | Purpose | Maintained At |
+|---|---|---|---|
+| `core/` | neostronghold/core | HA Core fork | core/ |
+| `os/` | neostronghold/os | neostrongholdOS | os/ |
+| `web/` | neostronghold/web | Brand website | web/ |
+| `app/` | neostronghold/app | Main app | app/ |
+| `inspiration/frontend/` | neoparadise/citadelevolve-frontend | HA frontend reference | n/a (research) |
+| `inspiration/openclaw/` | openclaw/openclaw | Multi-agent reference | n/a (research) |
+| `inspiration/opencode/` | opencode-ai/opencode | Agent interface reference | n/a (research) |
 
 ```bash
 # Pull latest from all submodules
 git submodule update --remote --merge
 
 # Update a specific submodule
+git submodule update --remote --merge web
 git submodule update --remote --merge core
-git submodule update --remote --merge inspiration/frontend
-git submodule update --remote --merge inspiration/openclaw
-git submodule update --remote --merge inspiration/opencode
 
 # Commit submodule pointer change
-git add core inspiration
-git commit -m "chore: update submodules to latest main"
+git add web core
+git commit -m "chore: update web and core submodules"
+git push
 ```
 
 ---
@@ -168,9 +154,37 @@ git commit -m "chore: update submodules to latest main"
 | Variable | Required For | Where to Set |
 |---|---|---|
 | `NEXT_PUBLIC_WEB3FORMS_KEY` | Contact form email sending | `.env.local` in `web/` |
+| `VITE_SUPABASE_URL` | Supabase backend | `.env` in `app/` |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase backend | `.env` in `app/` |
+| `VITE_MODE` | `local` or `cloud` | `.env` in `app/` |
 
 ---
 
 ## Deployment
 
-The website is deployed on **Vercel** (linked to GitHub — push to `main` auto-deploys to neostronghold.com).
+| App | Platform | URL | Trigger |
+|---|---|---|---|
+| **Brand website** | Vercel | neostronghold.com | Push to `neostronghold/web` main |
+| **Main app** | Vercel (future) | app.neostronghold.com | Push to `neostronghold/app` main |
+
+---
+
+## Prototype 1 Status
+
+**Phase: Active development** — See `docs/app-planning-prompt.md` for the full plan.
+
+- [ ] HA Core WebSocket connection (auth, subscribe, reconnect)
+- [ ] Entity state display (8+ core cards)
+- [ ] Sections + Masonry views
+- [ ] Dashboard editor (visual + YAML)
+- [ ] Card registry with lazy loading
+- [ ] Theme system (cosmic dark)
+- [ ] Sidebar navigation (Discord-inspired)
+- [ ] Agent with a SOUL (Orion)
+- [ ] Agent chat interface (streaming, tool calls)
+- [ ] Agent tool: HA service calls
+- [ ] Permission dialog for tool approval
+- [ ] Session management
+- [ ] Supabase auth + sync
+- [ ] Docker Compose for local dev
+- [ ] neostrongholdOS branding changes
