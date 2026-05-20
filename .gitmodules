@@ -1,6 +1,6 @@
 [submodule "core"]
 	path = core
-	url = git@github.com:neoparadise/citadelevolve-core.git
+	url = git@github.com:neostronghold/core.git
 	branch = main
 [submodule "inspiration/frontend"]
 	path = inspiration/frontend
