@@ -15,11 +15,11 @@
 	path = os
 	url = git@github.com:neostronghold/os.git
 	branch = main
-[submodule "app"]
-	path = app
-	url = git@github.com:neostronghold/app.git
-	branch = main
 [submodule "web"]
 	path = web
 	url = git@github.com:neostronghold/web.git
 	branch = main
+[submodule "app"]
+	path = app
+	url = git@github.com:neostronghold/app.git
+	branch = dev
